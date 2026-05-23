@@ -65,43 +65,29 @@ const calcolaDurata = (p) => {
       );
 
      
+
 scanner.render((decodedText) => {
-  if (!logged) {
-    if (decodedText.includes("ID")) {
-      alert("Login effettuato ✅");
 
-     
+  const utenteQR = decodedText;
 
+  setUtente(utenteQR);
+  setNome(utenteQR);
 
-const utenteQR = decodedText;
-
-if (!cantiereSelezionato) {
-  alert("Seleziona il cantiere prima ❗");
-  scanner.clear();
-  return;
-}
-
-// ✅ REGISTRA SUBITO INGRESSO
-navigator.geolocation.getCurrentPosition(async (posizione) => {
-  const lat = posizione.coords.latitude;
-  const lng = posizione.coords.longitude;
-
-  const latCantiere = 44.3538;
-  const lngCantiere = 9.2152;
-
-  const distanza = Math.sqrt(
-    Math.pow(lat - latCantiere, 2) +
-    Math.pow(lng - lngCantiere, 2)
-  ) * 111000;
-
-  if (distanza > 50) {
-    alert("Sei fuori dal cantiere ❌");
+  if (!cantiereSelezionato) {
+    alert("Seleziona il cantiere prima ❗");
+    scanner.clear();
     return;
   }
 
-  alert("Ingresso registrato ✅");
+  registraIngresso(utenteQR);
 
-  await supabase.from("presenze").insert([
+  scanner.clear();
+  return;
+});
+
+
+alert("QR letto ✅");
+
     {
       nome: utenteQR,
       azienda,
@@ -136,21 +122,7 @@ return;
     }
  }, [logged]);
 
-useEffect(() => {
-  if (logged && utente && cantiereSelezionato) {
-    registraIngresso();
-  }
-}, [logged, utente, cantiereSelezionato]);
 
-useEffect(() => {
-  if (logged && utente) {
-    if (cantiereSelezionato) {
-      registraIngresso();
-    } else {
-      alert("Seleziona il cantiere prima ❗");
-    }
-  }
-}, [logged, utente, cantiereSelezionato]);
 
   // ✅ ENTRATA / USCITA AUTOMATICA
   const registraIngresso = async (utenteQR) => {
@@ -294,9 +266,11 @@ if (!logged) {
 
       <br /><br />
 
-      <button onClick={registraIngresso}>
-        Registra ingresso
-      </button>
+      
+<button id="btnIngresso" onClick={registraIngresso}>
+  Registra ingresso
+</button>
+
 
 <br /><br />
 <button onClick={generaPDF}>
