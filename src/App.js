@@ -166,17 +166,17 @@ const generaPDF = () => {
       <h2>Presenze</h2>
       <ul>
         {presenze.map((p) => (
-          <li key={p.id}>
-           
-{p.nome} ({p.azienda}) - {cantieri.find(c => String(c.id) === String(p.cantiere_id))?.nome || "Cantiere"} 
-<br />
-🕒 Entrata: {new Date(p.ingresso).toLocaleTimeString()}
-<br />
-🚪 Uscita: {p.uscita ? new Date(p.uscita).toLocaleTimeString() : "Ancora dentro"}
-<br />
-📍 {p.latitudine}, {p.longitudine}
+          
+<li key={p.id} style={{ marginBottom: "15px", borderBottom: "1px solid #ccc", paddingBottom: "10px" }}>
+  {p.nome} ({p.azienda}) - {cantieri.find(c => String(c.id) === String(p.cantiere_id))?.nome || "Cantiere"}
+  <br />
+  🕒 Entrata: {p.ingresso ? new Date(p.ingresso).toLocaleString("it-IT") : ""}
+  <br />
+  🚪 Uscita: {p.uscita ? new Date(p.uscita).toLocaleString("it-IT") : "Ancora dentro"}
+  <br />
+  📍 {p.latitudine}, {p.longitudine}
+</li>
 
-          </li>
         ))}
       </ul>
 
