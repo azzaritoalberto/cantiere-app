@@ -167,7 +167,15 @@ const generaPDF = () => {
       <ul>
         {presenze.map((p) => (
           <li key={p.id}>
-           {p.nome} ({p.azienda}) - {cantieri.find(c => String(c.id) === String(p.cantiere_id))?.nome || "Cantiere"} 📍 {p.latitudine}, {p.longitudine}
+           
+{p.nome} ({p.azienda}) - {cantieri.find(c => String(c.id) === String(p.cantiere_id))?.nome || "Cantiere"} 
+<br />
+🕒 Entrata: {new Date(p.ingresso).toLocaleTimeString()}
+<br />
+🚪 Uscita: {p.uscita ? new Date(p.uscita).toLocaleTimeString() : "Ancora dentro"}
+<br />
+📍 {p.latitudine}, {p.longitudine}
+
           </li>
         ))}
       </ul>
