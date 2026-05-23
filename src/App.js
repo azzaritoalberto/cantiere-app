@@ -120,9 +120,8 @@ if (!utente || !cantiereSelezionato) {
   return;
 }
 
-      alert("Inserisci nome e seleziona cantiere");
-      return;
-    }
+     
+    
 
     navigator.geolocation.getCurrentPosition(async (posizione) => {
       const lat = posizione.coords.latitude;
