@@ -70,12 +70,17 @@ scanner.render((decodedText) => {
     if (decodedText.includes("ID")) {
       alert("Login effettuato ✅");
 
-      setUtente(decodedText);
-      setLogged(true);
+     
+setUtente(decodedText);
+setLogged(true);
 
-      // ✅ IMPORTANTISSIMO → FERMA SCANNER
-      scanner.clear();
-      return;
+// ✅ REGISTRA SUBITO INGRESSO
+
+
+// ✅ FERMA SCANNER
+scanner.clear();
+return;
+
     } else {
       alert("QR non valido ❌");
       return;
@@ -91,9 +96,20 @@ scanner.render((decodedText) => {
     }
  }, [logged]);
 
+useEffect(() => {
+  if (logged && utente && cantiereSelezionato) {
+    registraIngresso();
+  }
+}, [logged, utente, cantiereSelezionato]);
+
   // ✅ ENTRATA / USCITA AUTOMATICA
   const registraIngresso = async () => {
-    if (!nome || !cantiereSelezionato) {
+    
+if (!utente || !cantiereSelezionato) {
+  alert("Scansiona QR e seleziona cantiere");
+  return;
+}
+
       alert("Inserisci nome e seleziona cantiere");
       return;
     }
@@ -120,7 +136,7 @@ if (distanza > 50) {
       const { data: accessiAperti } = await supabase
         .from("accessi")
         .select("*")
-        .eq("nome", nome)
+        .eq("nome", utente)
         .is("uscita", null);
 
       if (accessiAperti && accessiAperti.length > 0) {
@@ -135,7 +151,7 @@ if (distanza > 50) {
         // ✅ INGRESSO
         await supabase.from("accessi").insert([
           {
-            nome,
+            nome: utente,
             azienda,
             ingresso: new Date(),
             cantiere_id: cantiereSelezionato,
