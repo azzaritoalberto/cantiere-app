@@ -117,6 +117,21 @@ const generaPDF = () => {
   doc.save("presenze.pdf");
 };
 
+const calcolaDurata = (p) => {
+  if (!p.uscita || !p.ingresso) return "";
+
+  const ingresso = new Date(p.ingresso);
+  const uscita = new Date(p.uscita);
+
+  const diff = uscita - ingresso;
+
+  const minuti = Math.floor(diff / 60000);
+  const ore = Math.floor(minuti / 60);
+  const resto = minuti % 60;
+
+  return `${ore}h ${resto}min`;
+};
+
   return (
     <div style={{ padding: 20 }}>
       <h1>🏗️ Accesso Cantiere</h1>
@@ -173,6 +188,10 @@ const generaPDF = () => {
   🕒 Entrata: {p.ingresso ? new Date(p.ingresso).toLocaleString("it-IT") : ""}
   <br />
   🚪 Uscita: {p.uscita ? new Date(p.uscita).toLocaleString("it-IT") : "Ancora dentro"}
+
+<br />
+⏱️ Durata: {calcolaDurata(p)}
+
   <br />
   📍 {p.latitudine}, {p.longitudine}
 </li>
