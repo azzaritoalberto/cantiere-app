@@ -71,15 +71,55 @@ scanner.render((decodedText) => {
       alert("Login effettuato ✅");
 
      
-setUtente(decodedText);
-setLogged(true);
+
+
+const utenteQR = decodedText;
+
+if (!cantiereSelezionato) {
+  alert("Seleziona il cantiere prima ❗");
+  scanner.clear();
+  return;
+}
 
 // ✅ REGISTRA SUBITO INGRESSO
+navigator.geolocation.getCurrentPosition(async (posizione) => {
+  const lat = posizione.coords.latitude;
+  const lng = posizione.coords.longitude;
 
+  const latCantiere = 44.3538;
+  const lngCantiere = 9.2152;
+
+  const distanza = Math.sqrt(
+    Math.pow(lat - latCantiere, 2) +
+    Math.pow(lng - lngCantiere, 2)
+  ) * 111000;
+
+  if (distanza > 50) {
+    alert("Sei fuori dal cantiere ❌");
+    return;
+  }
+
+  alert("Ingresso registrato ✅");
+
+  await supabase.from("presenze").insert([
+    {
+      nome: utenteQR,
+      azienda,
+      cantiere_id: cantiereSelezionato,
+      latitudine: lat,
+      longitudine: lng,
+      ingresso: new Date()
+    }
+  ]);
+});
+
+setUtente(utenteQR);
+setLogged(true);
 
 // ✅ FERMA SCANNER
 scanner.clear();
 return;
+
 
     } else {
       alert("QR non valido ❌");
@@ -113,10 +153,10 @@ useEffect(() => {
 }, [logged, utente, cantiereSelezionato]);
 
   // ✅ ENTRATA / USCITA AUTOMATICA
-  const registraIngresso = async () => {
+  const registraIngresso = async (utenteQR) => {
     
 
-if (!utente || !cantiereSelezionato) {
+if (!utenteQR || !cantiereSelezionato) {
   return;
 }
 
@@ -142,11 +182,14 @@ if (distanza > 50) {
   return;
 }
 
+// ✅ SOLO QUI confermi ingresso
+alert("Ingresso registrato ✅");
+
       // 🔍 controlla se è già dentro
       const { data: accessiAperti } = await supabase
         .from("accessi")
         .select("*")
-        .eq("nome", utente)
+        .eq("nome", utenteQR)
         .is("uscita", null);
 
       if (accessiAperti && accessiAperti.length > 0) {
@@ -161,7 +204,7 @@ if (distanza > 50) {
         // ✅ INGRESSO
         await supabase.from("accessi").insert([
           {
-            nome: utente,
+            nome: utenteQR || utente,
             azienda,
             ingresso: new Date(),
             cantiere_id: cantiereSelezionato,
