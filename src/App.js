@@ -11,6 +11,10 @@ import { Html5QrcodeScanner } from "html5-qrcode";
 
 export default function App() {
   const [nome, setNome] = useState("");
+
+const [logged, setLogged] = useState(false);
+const [utente, setUtente] = useState("");
+
   const [azienda, setAzienda] = useState("");
   const [presenze, setPresenze] = useState([]);
   const [cantieri, setCantieri] = useState([]);
@@ -61,7 +65,18 @@ const calcolaDurata = (p) => {
       );
 
       scanner.render((decodedText) => {
-        setNome(decodedText);
+        
+if (!logged) {
+  if (decodedText.includes("ID")) {
+    setUtente(decodedText);
+    setLogged(true);
+  } else {
+    alert("QR non valido ❌");
+  }
+} else {
+  setNome(decodedText);
+}
+
       });
 
       scannerRef.current = scanner;
@@ -88,7 +103,7 @@ const distanza = Math.sqrt(
   Math.pow(lng - lngCantiere, 2)
 ) * 111000;
 
-if (distanza > 200) {
+if (distanza > 50) {
   alert("Sei fuori dal cantiere ❌");
   return;
 }
@@ -161,10 +176,19 @@ const calcolaDurata = (p) => {
   return `${ore}h ${resto}min`;
 };
 
+if (!logged) {
+  return (
+    <div style={{ padding: 20 }}>
+      <h2>Scansiona QR Operatore 📲</h2>
+      <div id="reader"></div>
+    </div>
+  );
+}
+
   return (
     <div style={{ padding: 20 }}>
       <h1>🏗️ Accesso Cantiere</h1>
-
+<p>👷 Utente: {utente}</p>
       <input
         placeholder="Nome"
         value={nome}
