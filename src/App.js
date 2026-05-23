@@ -17,6 +17,21 @@ export default function App() {
   const [cantiereSelezionato, setCantiereSelezionato] = useState("");
   const scannerRef = useRef(null);
 
+const calcolaDurata = (p) => {
+  if (!p.uscita || !p.ingresso) return "";
+
+  const ingresso = new Date(p.ingresso);
+  const uscita = new Date(p.uscita);
+
+  const diff = uscita - ingresso;
+
+  const minuti = Math.floor(diff / 60000);
+  const ore = Math.floor(minuti / 60);
+  const resto = minuti % 60;
+
+  return `${ore}h ${resto}min`;
+};
+
   // ✅ carica presenze
   const caricaPresenze = async () => {
     const { data } = await supabase
@@ -63,6 +78,20 @@ export default function App() {
     navigator.geolocation.getCurrentPosition(async (posizione) => {
       const lat = posizione.coords.latitude;
       const lng = posizione.coords.longitude;
+
+t latCantiere = 44.3538;
+const lngCantiere = 9.2152;
+
+// distanza approssimata in metri
+const distanza = Math.sqrt(
+  Math.pow(lat - latCantiere, 2) +
+  Math.pow(lng - lngCantiere, 2)
+) * 111000;
+
+if (distanza > 200) {
+  alert("Sei fuori dal cantiere ❌");
+  return;
+}
 
       // 🔍 controlla se è già dentro
       const { data: accessiAperti } = await supabase
