@@ -102,6 +102,16 @@ useEffect(() => {
   }
 }, [logged, utente, cantiereSelezionato]);
 
+useEffect(() => {
+  if (logged && utente) {
+    if (cantiereSelezionato) {
+      registraIngresso();
+    } else {
+      alert("Seleziona il cantiere prima ❗");
+    }
+  }
+}, [logged, utente, cantiereSelezionato]);
+
   // ✅ ENTRATA / USCITA AUTOMATICA
   const registraIngresso = async () => {
     
