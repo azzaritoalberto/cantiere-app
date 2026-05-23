@@ -64,24 +64,32 @@ const calcolaDurata = (p) => {
         false
       );
 
-      scanner.render((decodedText) => {
-        
-if (!logged) {
-  if (decodedText.includes("ID")) {
-    setUtente(decodedText);
-    setLogged(true);
-  } else {
-    alert("QR non valido ❌");
-  }
-} else {
-  setNome(decodedText);
-}
+     
+scanner.render((decodedText) => {
+  if (!logged) {
+    if (decodedText.includes("ID")) {
+      alert("Login effettuato ✅");
 
-      });
+      setUtente(decodedText);
+      setLogged(true);
+
+      // ✅ IMPORTANTISSIMO → FERMA SCANNER
+      scanner.clear();
+      return;
+    } else {
+      alert("QR non valido ❌");
+      return;
+    }
+  }
+
+  // ✅ normale uso dopo login
+  setNome(decodedText);
+});
+
 
       scannerRef.current = scanner;
     }
-  }, []);
+ }, [logged]);
 
   // ✅ ENTRATA / USCITA AUTOMATICA
   const registraIngresso = async () => {
