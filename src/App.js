@@ -115,10 +115,11 @@ useEffect(() => {
   // ✅ ENTRATA / USCITA AUTOMATICA
   const registraIngresso = async () => {
     
+
 if (!utente || !cantiereSelezionato) {
-  alert("Scansiona QR e seleziona cantiere");
   return;
 }
+
 
      
     
